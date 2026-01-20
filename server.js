@@ -9,11 +9,9 @@ const logger = require('morgan');
 //auth and users
 const authRouter = require('./controllers/auth');
 const usersRouter = require('./controllers/users');
+const transactionsRoutes = require('./controllers/transactions');
+const categoriesRoutes = require('./controllers/categories');
 
-//routes
-const transactionsRoutes = require('./routes/transactions.routes');
-const categoriesRoutes = require('./routes/categories.routes');
-const summaryRoutes = require('./routes/summary.routes');
 
 
 //database
