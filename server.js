@@ -7,11 +7,22 @@ const cors = require('cors');
 const logger = require('morgan');
 
 //auth and users
+const verifyToken = require('./middleware/verify-token');
 const authRouter = require('./controllers/auth');
 const usersRouter = require('./controllers/users');
+<<<<<<< HEAD
 const transactionsRoutes = require('./controllers/transactions');
 const categoriesRoutes = require('./controllers/categories');
 
+=======
+const categoriesRoutes = require('./controllers/categories');
+const transactionsRoutes = require('./controllers/transactions');
+
+//routes -- let's stick to the controller for routes
+// const transactionsRoutes = require('./routes/transactions.routes');
+// const categoriesRoutes = require('./routes/categories.routes');
+// const summaryRoutes = require('./routes/summary.routes');
+>>>>>>> e17f44d36297e90ff0111b03944b64b3789c29c9
 
 
 //database
@@ -31,7 +42,7 @@ app.use('/auth', authRouter);
 app.use('/users', usersRouter);
 app.use('/transactions', transactionsRoutes);
 app.use('/categories', categoriesRoutes);
-app.use('/summary', summaryRoutes);
+// app.use('/summary', summaryRoutes); we don't need this one
 
 
 //server
