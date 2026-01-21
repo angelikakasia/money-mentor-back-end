@@ -32,6 +32,24 @@ router.get('/recent', verifyToken, async (req, res) => {
   }
 });
 
+// GET /transactions/summary - Get all for the current month
+router.get('/monthly-summary', verifyToken, async (req, res) => {
+  try {
+    const startOfMonth = new Date();
+    startOfMonth.setDate(1);
+    startOfMonth.setHours(0, 0, 0, 0);
+
+    const transactions = await Transaction.find({
+      userId: req.user._id,
+      date: { $gte: startOfMonth }
+    }).sort({ date: -1 });
+
+    res.status(200).json(transactions);
+  } catch (err) {
+    res.status(500).json({ err: err.message });
+  }
+});
+
 // GET /transactions/:id - show one (owner-only)
 router.get("/:id", verifyToken, async (req, res) => {
   try {
