@@ -17,6 +17,27 @@ router.get("/", verifyToken, async (req, res) => {
   }
 });
 
+// GET /transactions/:id - show one (owner-only)
+router.get("/:id", verifyToken, async (req, res) => {
+  try {
+    const transaction = await Transaction.findById(req.params.id);
+
+    if (!transaction) {
+      return res.status(404).json({ err: "Transaction not found" });
+    }
+
+    // Check permissions
+    if (!transaction.userId.equals(req.user._id)) {
+      return res.status(403).json({ err: "You're not allowed to do that!" });
+    }
+
+    res.status(200).json(transaction);
+  } catch (err) {
+    res.status(500).json({ err: err.message });
+  }
+});
+
+
 // POST /transactions - create (assign userId from token)
 router.post("/", verifyToken, async (req, res) => {
   try {
