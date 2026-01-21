@@ -4,6 +4,7 @@ const verifyToken = require('../middleware/verify-token');
 
 const User = require('../models/user');
 
+// might not need this anymore since we are no longer fetching all users on the dashboard
 router.get('/', verifyToken, async (req, res) => {
     try {
         const users = await User.find({}, 'username');
