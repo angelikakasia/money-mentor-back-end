@@ -8,7 +8,7 @@ const transactionSchema = new mongoose.Schema(
 
     date: { type: Date, default: Date.now, required: true },
 
-    type: { type: String, enum: ["income", "expense"], required: true },
+    type: { type: String, enum: ["Income", "Expense"], required: true },
 
     categoryId: {
       type: mongoose.Schema.Types.ObjectId,
