@@ -1,4 +1,7 @@
 const mongoose = require("mongoose");
+//user level from points
+const { getLevelFromPoints } = require('../utils/levels');
+
 
 const transactionSchema = new mongoose.Schema(
   {

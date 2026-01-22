@@ -17,23 +17,22 @@ router.get("/", verifyToken, async (req, res) => {
   }
 });
 
-// GET /recent - get list of recent transactions for dashboard.jsx -- this goes before parameter routes due to specific "recent" in the route
-router.get('/recent', verifyToken, async (req, res) => { 
+// GET /recent - get list of recent transactions for dashboard.jsx
+router.get("/recent", verifyToken, async (req, res) => {
   try {
     const recentTransactions = await Transaction.find({ userId: req.user._id })
-    .populate('categoryId')
-    .sort({ date: -1, createdAt: -1 })
-    .limit(5)
+      .populate("categoryId")
+      .sort({ date: -1, createdAt: -1 })
+      .limit(5);
 
     res.status(200).json(recentTransactions);
-    
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
 // GET /transactions/summary - Get all for the current month
-router.get('/monthly-summary', verifyToken, async (req, res) => {
+router.get("/monthly-summary", verifyToken, async (req, res) => {
   try {
     const startOfMonth = new Date();
     startOfMonth.setDate(1);
@@ -41,10 +40,10 @@ router.get('/monthly-summary', verifyToken, async (req, res) => {
 
     const transactions = await Transaction.find({
       userId: req.user._id,
-      date: { $gte: startOfMonth }
-    }).sort({ date: -1, createdAt: -1 });
-    }).populate('categoryId')
-    .sort({ date: -1 });
+      date: { $gte: startOfMonth },
+    })
+      .populate("categoryId")
+      .sort({ date: -1, createdAt: -1 });
 
     res.status(200).json(transactions);
   } catch (err) {
@@ -61,7 +60,6 @@ router.get("/:id", verifyToken, async (req, res) => {
       return res.status(404).json({ err: "Transaction not found" });
     }
 
-    // Check permissions
     if (!transaction.userId.equals(req.user._id)) {
       return res.status(403).json({ err: "You're not allowed to do that!" });
     }
@@ -72,7 +70,7 @@ router.get("/:id", verifyToken, async (req, res) => {
   }
 });
 
-// POST /transactions - create (assign userId from token)
+// POST /transactions - create
 router.post("/", verifyToken, async (req, res) => {
   try {
     req.body.userId = req.user._id;
@@ -85,25 +83,21 @@ router.post("/", verifyToken, async (req, res) => {
   }
 });
 
-// PUT /transactions/:id 
+// PUT /transactions/:id
 router.put("/:id", verifyToken, async (req, res) => {
   try {
-    // Find transaction
     const transaction = await Transaction.findById(req.params.id);
 
     if (!transaction) {
       return res.status(404).json({ err: "Transaction not found" });
     }
 
-    // Check permissions
     if (!transaction.userId.equals(req.user._id)) {
       return res.status(403).json({ err: "You're not allowed to do that!" });
     }
 
-    // Prevent changing ownership
     delete req.body.userId;
 
-    // Update transaction
     const updatedTransaction = await Transaction.findByIdAndUpdate(
       req.params.id,
       req.body,
@@ -116,17 +110,15 @@ router.put("/:id", verifyToken, async (req, res) => {
   }
 });
 
-// DELETE /transactions/:id 
+// DELETE /transactions/:id
 router.delete("/:id", verifyToken, async (req, res) => {
   try {
-    // Find transaction
     const transaction = await Transaction.findById(req.params.id);
 
     if (!transaction) {
       return res.status(404).json({ err: "Transaction not found" });
     }
 
-    // Check permissions
     if (!transaction.userId.equals(req.user._id)) {
       return res.status(403).json({ err: "You're not allowed to do that!" });
     }
@@ -137,6 +129,5 @@ router.delete("/:id", verifyToken, async (req, res) => {
     res.status(500).json({ err: err.message });
   }
 });
-
 
 module.exports = router;

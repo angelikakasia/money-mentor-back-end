@@ -11,6 +11,8 @@ const authRouter = require('./controllers/auth');
 const usersRouter = require('./controllers/users');
 const transactionsRoutes = require('./controllers/transactions');
 const categoriesRoutes = require('./controllers/categories');
+const mentorRoutes = require('./controllers/mentor');
+
 
 //database
 mongoose.connect(process.env.MONGODB_URI);
@@ -29,6 +31,7 @@ app.use('/auth', authRouter);
 app.use('/users', usersRouter);
 app.use('/transactions', transactionsRoutes);
 app.use('/categories', categoriesRoutes);
+app.use('/mentor', mentorRoutes);
 
 //server
 app.listen(3000, () => {
