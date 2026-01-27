@@ -27,6 +27,8 @@ Money Mentor’s backend handles authentication, data persistence, authorization
 ## Getting started
 
 1. Install dependencies
+npm i
+npm install @google/genai
 
 2. Create a `.env` file with:
 - MONGODB_URI=your_mongo_connection_string
@@ -35,6 +37,7 @@ Money Mentor’s backend handles authentication, data persistence, authorization
 - GEMINI_API_KEY=your_real_Gemini_AI_key
 
 3. Start the server
+npm run dev
 
 ### Frontend Repository
 The frontend repository for this project can be found here:  
