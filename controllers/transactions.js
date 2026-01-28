@@ -81,31 +81,48 @@ router.get("/:id", verifyToken, async (req, res) => {
 router.post("/", verifyToken, async (req, res) => {
   try {
     req.body.userId = req.user._id;
-    //Saves the transaction (income or expense) to MongoDB
-    const transaction = await Transaction.create(req.body);
 
-    const amount = Number(transaction.amount);
+    const amount = Number(req.body.amount);
+    if (isNaN(amount)) {
+      return res.status(400).json({ err: "Invalid amount" });
+    }
 
     let pointsToAdd = 0;
 
-    if (transaction.type === "Income") {
-      pointsToAdd = Math.floor(transaction.amount * 0.9);
+    if (req.body.type === "Income") {
+      console.log("helloooo INCOMEEEEEEEEEE")
+      pointsToAdd = Math.floor(amount * 0.9);
     }
-    if (transaction.type === "Expense") {
-      pointsToAdd = Math.floor(transaction.amount * (-0.8));
-      transaction.amount = req.body.amount * -1;
-      await transaction.save();
+
+    if (req.body.type === "Expense") {
+ 
+      req.body.amount = amount * -1; // make expense negative ONCE
+      console.log("HELLO EXPENSEEEEEEEEEEEEE")
+      console.log(typeof req.body.amount)
+      console.log("REQ THAT BODY", req.body.amount)
+      pointsToAdd = Math.floor(req.body.amount * 0.8 );
+      console.log("HELLO points to add ", pointsToAdd)
     }
-    console.log(pointsToAdd);
-    // update user points. $inc add this number to existing
+
+    const transaction = await Transaction.create(req.body);
+    
+
+   
+    
     if (pointsToAdd !== 0) {
-      await User.findByIdAndUpdate(
+      const currentUser = await User.findByIdAndUpdate(
         req.user._id,
         { $inc: { points: pointsToAdd } },
         { new: true },
       );
+      console.log(currentUser);
+      if (currentUser.points <=0){
+        currentUser.points=0;
+        await currentUser.save();
+      }
     }
     await transaction.save();
+
     console.log(transaction);
     const populatedTransaction = await transaction.populate("categoryId");
     res.status(201).json(populatedTransaction);
