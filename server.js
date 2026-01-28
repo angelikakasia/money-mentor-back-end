@@ -5,7 +5,6 @@ const app = express();
 const mongoose = require('mongoose');
 const cors = require('cors');
 const logger = require('morgan');
-
 //auth and users
 const authRouter = require('./controllers/auth');
 const usersRouter = require('./controllers/users');
@@ -16,6 +15,7 @@ const mentorRoutes = require('./controllers/mentor');
 
 //database
 mongoose.connect(process.env.MONGODB_URI);
+const PORT = process.env.PORT
 
 mongoose.connection.on('connected', () => {
   console.log(`Connected to MongoDB ${mongoose.connection.name}.`);
@@ -34,6 +34,6 @@ app.use('/categories', categoriesRoutes);
 app.use('/mentors', mentorRoutes);
 
 //server
-app.listen(3000, () => {
+app.listen(PORT, () => {
   console.log('The express app is ready!');
 });
