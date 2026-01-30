@@ -88,42 +88,32 @@ router.post("/", verifyToken, async (req, res) => {
     }
 
     let pointsToAdd = 0;
-
     if (req.body.type === "Income") {
-      console.log("helloooo INCOMEEEEEEEEEE")
       pointsToAdd = Math.floor(amount * 0.9);
     }
 
     if (req.body.type === "Expense") {
- 
       req.body.amount = amount * -1; // make expense negative ONCE
-      console.log("HELLO EXPENSEEEEEEEEEEEEE")
-      console.log(typeof req.body.amount)
-      console.log("REQ THAT BODY", req.body.amount)
-      pointsToAdd = Math.floor(req.body.amount * 0.8 );
-      console.log("HELLO points to add ", pointsToAdd)
+      pointsToAdd = Math.floor(req.body.amount * 0.8);
     }
 
     const transaction = await Transaction.create(req.body);
-    
 
-   
-    
     if (pointsToAdd !== 0) {
       const currentUser = await User.findByIdAndUpdate(
         req.user._id,
         { $inc: { points: pointsToAdd } },
         { new: true },
       );
-      console.log(currentUser);
-      if (currentUser.points <=0){
-        currentUser.points=0;
+   
+      if (currentUser.points <= 0) {
+        currentUser.points = 0;
         await currentUser.save();
       }
     }
     await transaction.save();
 
-    console.log(transaction);
+ 
     const populatedTransaction = await transaction.populate("categoryId");
     res.status(201).json(populatedTransaction);
   } catch (err) {
