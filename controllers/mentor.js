@@ -15,7 +15,7 @@ const ai = new GoogleGenAI({
 //reads points from req.user calculates level
 router.get("/", verifyToken, async (req, res) => {
   const user = await User.findById(req.user._id);
-  console.log(user)
+
   const { level, name } = getLevelFromPoints(user.points); //computes level gives lvl name
   let mentorMessage = " Keep going - you are getting closer to your goal! ";
   let recentTransactions;
@@ -25,7 +25,7 @@ router.get("/", verifyToken, async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(5);
 
-    // AI Studio / preview client
+
     const genAI = new GoogleGenAI({
       apiKey: process.env.GEMINI_API_KEY,
     });
@@ -65,7 +65,7 @@ Then:
       ],
     });
 
-    // console.log("AI RESPONSE:", aiResponse?.candidates[0].content.parts[0]);
+    
 
     mentorMessage =
       response?.candidates[0]?.content?.parts[0]?.text ?? mentorMessage;
